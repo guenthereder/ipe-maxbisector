@@ -2,7 +2,7 @@
 -- ipelet: max-bisector.lua
 ------------------------------------------------------------------------
 --
--- This ipelet lets one create a maximum norm bisector between two line 
+-- This ipelet lets one create a maximum norm bisector between two 
 -- points.
 --
 -- This program is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@
 label = "Max-Bisector"
 
 about = [[
-   Create max-bisector between two points. Weights given by symbol size.
+   Create L-inf bisector between two points. Weights given by symbol size.
 ]]
 
 function incorrect(model)
-  model:warning("Selection are NOT two points (marks)!")
+  model:warning("Selection is NOT two points (marks)!")
 end
 
 function getWeight(S)
@@ -205,7 +205,7 @@ function create_bisector(model)
      -- verify quadrant of B in A (top,bottom,left,right)
      local quad = getQuadrantOfB(A,B)
 
-     print(quad)
+     --print(quad)
 
      local rotation = 0;
      local dir = b - a
@@ -308,7 +308,7 @@ function create_bisector(model)
 
      -- DRAWING THE SEGMENTS OF THE POINTS
      -- ROTETE A POINT IF B WAS ROTATED
-     print("rotation: " , rotation, ", pointssize: ", pointSize)
+     --print("rotation: " , rotation, ", pointssize: ", pointSize)
      
      for idxA = 0,pointSize-1 do
         local idxB = idxA+1
@@ -320,7 +320,6 @@ function create_bisector(model)
          -- check rotation
          if rotation > 0 then
             for i=1,(4-rotation) do
-               print(i)
                pA = rotate90(a,pA)
                pB = rotate90(a,pB)
             end
