@@ -62,14 +62,14 @@ function weighted1Ddists(a,b,wa,wb)
    if wa == wb then 
       dista, distb = distAB/2, distAB/2
    elseif a < b then
-      dista = (-1)*dista/math.abs(wb-wa)
-      distb = distb/(wb+wa)
+      dista = wa * (-1)*dista/math.abs(wb-wa)
+      distb = wa * distb/(wb+wa)
    else
-      dista = (-1)*dista/(wb+wa)
-      distb = distb/math.abs(wa-wb)
+      dista = wa * (-1)*dista/(wb+wa)
+      distb = wa * distb/math.abs(wa-wb)
    end
    
-   return a+(wa*dista), a+(wa*distb)
+   return a+dista, a+distb
 end
 
 -- find the weighted midpoint between two sites
@@ -102,7 +102,9 @@ function collect_points(model)
    if B:type() ~= "reference" then incorrect(model) return end
    if A:type() ~= "reference" then incorrect(model) return end
 
-   if getWeight(A) < getWeight(B) then
+   if getWeight(A) < getWeight(B) or 
+      getWeight(A) == getWeight(B) and A:position().x < B:position().x or
+      getWeight(A) == getWeight(B) and A:position().x == B:position().x and A:position().y < B:position().y then
       return A, B, A:matrix(), B:matrix()
    else 
       return B, A, B:matrix(), A:matrix()
@@ -192,13 +194,6 @@ function create_bisector(model)
   points = {}
   pointsSize = 0
 
-  -- if weights are equal
-  if wa == wb then
-     -- construct line
-     print("Equal Weights: Not supported yet!")
---     xa, xb, ya, yb = weightedMidPoints(A,B)
---     create_line_segment(model,ipe.Vector(xa,ya),ipe.Vector(xb,yb))
-  else
      -- compute the (at most) eight points along the two (1,-1)-slope 
      -- lines per site
      
@@ -228,7 +223,8 @@ function create_bisector(model)
      end
 
      xa, xb, ya, yb = weightedMidPoints(a,b,wa,wb)
-
+  
+     -- if weights are equal
 
      local tX = yb - (a.y-a.x)
      local tPr = ipe.Vector(tX,yb)
@@ -241,7 +237,7 @@ function create_bisector(model)
      if b.x >= a.x then
         -- only (1)-line of B can intersect
         local tBx = yb - (b.y-b.x)
-        if tBx > tPl.x and tBx < tPr.x then
+        if tBx > tPl.x and tBx < tPr.x and not wa == wb then
            -- intersection, recompute tPl
            tPi = ipe.Vector(tBx,yb)
            tPl = ipe.Vector(xa, (a.y+a.x) - xa)
@@ -260,7 +256,7 @@ function create_bisector(model)
      else 
         -- only (-1)-line of B can intersect
         local tBx = (b.y+b.x) - yb
-        if tBx > tPl.x and tBx < tPr.x then
+        if tBx > tPl.x and tBx < tPr.x and not wa == wb then
            -- intersection, recompute tPr
            tPi = ipe.Vector(tBx,yb)
            tPr = ipe.Vector(xb, xb + (a.y-a.x))
@@ -278,7 +274,8 @@ function create_bisector(model)
         end
      end
      -- END TOP WEDGE
- 
+  
+  if not wa == wb then
      -- LEFT WEDGE
      if leftWedge then
         local yi = xa + (b.y-b.x)
@@ -305,29 +302,55 @@ function create_bisector(model)
         points[pointSize] = tPi
         pointSize = pointSize + 1
      end
-
-     -- DRAWING THE SEGMENTS OF THE POINTS
-     -- ROTETE A POINT IF B WAS ROTATED
-     --print("rotation: " , rotation, ", pointssize: ", pointSize)
+  
+  else
+     -- equal weights
+     local pl, pr = points[1], points[0]
+     local pll, prr = pl, pr
      
-     for idxA = 0,pointSize-1 do
-        local idxB = idxA+1
-        if idxA == pointSize-1 then idxB = 0 end
+     dist = math.max(math.abs(pr.x-pl.x),math.abs(pr.y-pl.y))
+     if a.x < b.x then
+        pll = pl + dist*ipe.Vector(-1,1)
+        prr = pr + dist*ipe.Vector(1,-1)
+     else
+        pll = pl + dist*ipe.Vector(-1,-1)
+        prr = pr + dist*ipe.Vector(1,1)
+     end
 
-        local pA = points[idxA]
-        local pB = points[idxB]
+     points[0], points[1], points[2], points[3] = pll, pl, pr, prr
+     pointSize = 4
 
-         -- check rotation
-         if rotation > 0 then
-            for i=1,(4-rotation) do
-               pA = rotate90(a,pA)
-               pB = rotate90(a,pB)
-            end
-         end
-         create_line_segment(model,pA,pB)
+     if a.x == b.x or a.y == b.y then
+        print("TODO: Hourglass output!")
      end
 
   end
+   
+  -- DRAWING THE SEGMENTS OF THE POINTS
+  -- ROTETE A POINT IF B WAS ROTATED
+  --print("rotation: " , rotation, ", pointssize: ", pointSize)
+    
+  for idxA = 0,pointSize-1 do
+      local idxB = idxA+1
+      if idxA == pointSize-1 then 
+         idxB = 0 
+         if wa == wb then break end
+      end
+        
+      local pA = points[idxA]
+      local pB = points[idxB]
+
+         -- check rotation
+      if rotation > 0 then
+         for i=1,(4-rotation) do
+            pA = rotate90(a,pA)
+            pB = rotate90(a,pB)
+         end
+      end
+      create_line_segment(model,pA,pB)
+  end
+
+--  end
 
 end
 
