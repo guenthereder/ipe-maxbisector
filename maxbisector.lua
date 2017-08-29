@@ -69,7 +69,7 @@ function weighted1Ddists(a,b,wa,wb)
       distb = distb/math.abs(wa-wb)
    end
    
-   return a+dista, a+distb
+   return a+(wa*dista), a+(wa*distb)
 end
 
 -- find the weighted midpoint between two sites
@@ -86,7 +86,7 @@ function collect_points(model)
 
    local items = {}
    local item_cnt = 0
-   
+
    for i, obj, sel, layer in p:objects() do
 	   if sel then
          items[item_cnt] = obj
@@ -186,9 +186,9 @@ function create_bisector(model)
 
   if not A or not B then return end
 
-  local a, b = A:position(), B:position()
+  local a, b = matrixA * A:position(), matrixB * B:position()
   local wa, wb = getWeight(A), getWeight(B)
- 
+
   points = {}
   pointsSize = 0
 
