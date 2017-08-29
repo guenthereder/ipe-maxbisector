@@ -195,9 +195,9 @@ function create_bisector(model)
   -- if weights are equal
   if wa == wb then
      -- construct line
-     print("Only a Line (equal weights), TODO!")
-     xa, xb, ya, yb = weightedMidPoints(A,B)
-     create_line_segment(model,ipe.Vector(xa,ya),ipe.Vector(xb,yb))
+     print("Equal Weights: Not supported yet!")
+--     xa, xb, ya, yb = weightedMidPoints(A,B)
+--     create_line_segment(model,ipe.Vector(xa,ya),ipe.Vector(xb,yb))
   else
      -- compute the (at most) eight points along the two (1,-1)-slope 
      -- lines per site
