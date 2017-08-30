@@ -10,7 +10,13 @@ L-infinity bisector between two points.
 
 ## Install
 * copy or link *maxbisector* to HOME/.ipe/ipelets
-   * example: `ln {maxbisector.git}/maxbisector.lua $HOME/.ipe/ipelets/maxbisector.lua`
+   * example: `ln {maxbisector.git}/maxbisector.lua
+     $HOME/.ipe/ipelets/maxbisector.lua`
+* (optional) customize ipe using a
+  [customize.lua](http://git.sthu.org/?p=ipestuff.git;a=blob_plain;f=customize.lua;hb=HEAD)
+ipelet (linked from [Stefan Huber](https://www.sthu.org/misc/ipe.html)) and add
+an additional ```shortcuts.ipelet_1_maxbisector = "Ctrl+D"  -- Max-Bisector of
+two points```
 
 ## Ipe
 * [Ipe](http://ipe.otfried.org/) - extendable drawing editor
