@@ -5,7 +5,7 @@ L-infinity bisector between two points.
 
 ## Usage
 * use marks as points
-* use the Symbol Size as Weight
+* use the symbol size as weight
 * select two marks and find *maxbisector* in the ipelets menu
 
 ## Install
@@ -15,8 +15,7 @@ L-infinity bisector between two points.
 * (optional) customize ipe using a
   [customize.lua](http://git.sthu.org/?p=ipestuff.git;a=blob_plain;f=customize.lua;hb=HEAD)
 ipelet (linked from [Stefan Huber](https://www.sthu.org/misc/ipe.html)) and add
-an additional ```shortcuts.ipelet_1_maxbisector = "Ctrl+D"  -- Max-Bisector of
-two points```
+an additional `shortcuts.ipelet_1_maxbisector = "Ctrl+D"`
 
 ## Ipe
 * [Ipe](http://ipe.otfried.org/) - extendable drawing editor
