@@ -320,8 +320,14 @@ function create_bisector(model)
      points[0], points[1], points[2], points[3] = pll, pl, pr, prr
      pointSize = 4
 
+     -- construct 'hourglass' in case of equal weight and equal x/y 
      if a.x == b.x or a.y == b.y then
-        print("TODO: Hourglass output!")
+        pl2 =  pl + dist*ipe.Vector(-1,1)
+        pr2 =  pr + dist*ipe.Vector(1,-1)
+     
+        points[0], points[1], points[2], points[3] = pl, pll, pl2, pl
+        points[4], points[5], points[6], points[7] = pr, prr, pr2, pr
+        pointSize = 8
      end
 
   end
