@@ -194,88 +194,88 @@ function create_bisector(model)
   points = {}
   pointsSize = 0
 
-     -- compute the (at most) eight points along the two (1,-1)-slope 
-     -- lines per site
-     
-     -- verify quadrant of B in A (top,bottom,left,right)
-     local quad = getQuadrantOfB(A,B)
-
-     --print(quad)
-
-     local rotation = 0;
-     local dir = b - a
-
-     if quad == "left" then
-        -- we rotate B by pi/2 to the top quadrant
-        rotation = 1 -- stands for 1 times pi/2
-        b = rotate90(a,b)
-     elseif quad == "bottom" then
-        -- we rotate B by pi/2 to the top quadrant
-        rotation = 2 -- stands for 2 times pi/2
-        b = rotate90(a,b)
-        b = rotate90(a,b)
-     elseif quad == "right" then
-        -- we rotate B by pi/2 to the top quadrant
-        rotation = 3 -- stands for 3 times pi/2
-        b = rotate90(a,b)
-        b = rotate90(a,b)
-        b = rotate90(a,b)
-     end
-
-     xa, xb, ya, yb = weightedMidPoints(a,b,wa,wb)
+  -- compute the (at most) eight points along the two (2,-1)-slope 
+  -- lines per site
   
-     -- if weights are equal
+  -- verify quadrant of B in A (top,bottom,left,right)
+  local quad = getQuadrantOfB(A,B)
 
-     local tX = yb - (a.y-a.x)
-     local tPr = ipe.Vector(tX,yb)
-     local tPl = ipe.Vector(tPr.x - (2*(tX-a.x)), yb)
+  --print(quad)
 
-     local pointSize = 0
-     local leftWedge, rightWedge = false, false
+  local rotation = 0;
+  local dir = b - a
 
-     -- TOP WEDGE 
-     if b.x >= a.x then
-        -- only (1)-line of B can intersect
-        local tBx = yb - (b.y-b.x)
-        if tBx > tPl.x and tBx < tPr.x and not wa == wb then
-           -- intersection, recompute tPl
-           tPi = ipe.Vector(tBx,yb)
-           tPl = ipe.Vector(xa, (a.y+a.x) - xa)
+  if quad == "left" then
+     -- we rotate B by pi/2 to the top quadrant
+     rotation = 1 -- stands for 1 times pi/2
+     b = rotate90(a,b)
+  elseif quad == "bottom" then
+     -- we rotate B by pi/2 to the top quadrant
+     rotation = 2 -- stands for 2 times pi/2
+     b = rotate90(a,b)
+     b = rotate90(a,b)
+  elseif quad == "right" then
+     -- we rotate B by pi/2 to the top quadrant
+     rotation = 3 -- stands for 3 times pi/2
+     b = rotate90(a,b)
+     b = rotate90(a,b)
+     b = rotate90(a,b)
+  end
 
-           points[pointSize] = tPr
-           points[pointSize+1] = tPi
-           points[pointSize+2] = tPl
-           pointSize = pointSize + 3
-
-           leftWedge = true
-        else
-           points[pointSize] = tPr
-           points[pointSize+1] = tPl
-           pointSize = pointSize + 2
-        end
-     else 
-        -- only (-1)-line of B can intersect
-        local tBx = (b.y+b.x) - yb
-        if tBx > tPl.x and tBx < tPr.x and not wa == wb then
-           -- intersection, recompute tPr
-           tPi = ipe.Vector(tBx,yb)
-           tPr = ipe.Vector(xb, xb + (a.y-a.x))
-
-           points[pointSize] = tPr
-           points[pointSize+1] = tPi
-           points[pointSize+2] = tPl
-           pointSize = pointSize + 3
-
-           rightWedge = true
-        else
-           points[pointSize] = tPr
-           points[pointSize+1] = tPl
-           pointSize = pointSize + 2
-        end
-     end
-     -- END TOP WEDGE
+  xa, xb, ya, yb = weightedMidPoints(a,b,wa,wb)
   
-  if not wa == wb then
+  -- if weights are equal
+
+  local tX = yb - (a.y-a.x)
+  local tPr = ipe.Vector(tX,yb)
+  local tPl = ipe.Vector(tPr.x - (2*(tX-a.x)), yb)
+
+  local pointSize = 0
+  local leftWedge, rightWedge = false, false
+
+  -- TOP WEDGE 
+  if b.x >= a.x then
+     -- only (1)-line of B can intersect
+     local tBx = yb - (b.y-b.x)
+     if tBx > tPl.x and tBx < tPr.x and not wa == wb then
+        -- intersection, recompute tPl
+        tPi = ipe.Vector(tBx,yb)
+        tPl = ipe.Vector(xa, (a.y+a.x) - xa)
+
+        points[pointSize] = tPr
+        points[pointSize+1] = tPi
+        points[pointSize+2] = tPl
+        pointSize = pointSize + 3
+
+        leftWedge = true
+     else
+        points[pointSize] = tPr
+        points[pointSize+1] = tPl
+        pointSize = pointSize + 2
+     end
+  else 
+     -- only (-1)-line of B can intersect
+     local tBx = (b.y+b.x) - yb
+     if tBx > tPl.x and tBx < tPr.x and not wa == wb then
+        -- intersection, recompute tPr
+        tPi = ipe.Vector(tBx,yb)
+        tPr = ipe.Vector(xb, xb + (a.y-a.x))
+
+        points[pointSize] = tPr
+        points[pointSize+1] = tPi
+        points[pointSize+2] = tPl
+        pointSize = pointSize + 3
+
+        rightWedge = true
+     else
+        points[pointSize] = tPr
+        points[pointSize+1] = tPl
+        pointSize = pointSize + 2
+     end
+  end
+  -- END TOP WEDGE
+ 
+  if not (wa == wb) then
      -- LEFT WEDGE
      if leftWedge then
         local yi = xa + (b.y-b.x)
