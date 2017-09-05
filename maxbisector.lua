@@ -135,8 +135,8 @@ function dist(P,S)
 end
 
 -- return left, right, bottom, top 
-function getQuadrantOfB(A,B)
-   local dir = B:position() - A:position()
+function getQuadrantOfB(a,b)
+   local dir = b - a
 
    if dir.x >= 0 and dir.y >= 0 then
       if math.abs(dir.x) == math.abs(dir.y) then
@@ -198,19 +198,18 @@ function create_bisector(model)
   -- lines per site
   
   -- verify quadrant of B in A (top,bottom,left,right)
-  local quad = getQuadrantOfB(A,B)
+  local quad = getQuadrantOfB(a,b)
 
-  --print(quad)
+--  print(quad)
 
   local rotation = 0;
-  local dir = b - a
 
   if quad == "left" then
      -- we rotate B by pi/2 to the top quadrant
      rotation = 1 -- stands for 1 times pi/2
      b = rotate90(a,b)
   elseif quad == "bottom" then
-     -- we rotate B by pi/2 to the top quadrant
+    -- we rotate B by pi/2 to the top quadrant
      rotation = 2 -- stands for 2 times pi/2
      b = rotate90(a,b)
      b = rotate90(a,b)
@@ -224,8 +223,6 @@ function create_bisector(model)
 
   xa, xb, ya, yb = weightedMidPoints(a,b,wa,wb)
   
-  -- if weights are equal
-
   local tX = yb - (a.y-a.x)
   local tPr = ipe.Vector(tX,yb)
   local tPl = ipe.Vector(tPr.x - (2*(tX-a.x)), yb)
@@ -237,7 +234,7 @@ function create_bisector(model)
   if b.x >= a.x then
      -- only (1)-line of B can intersect
      local tBx = yb - (b.y-b.x)
-     if tBx > tPl.x and tBx < tPr.x and not wa == wb then
+     if tBx > tPl.x and tBx < tPr.x and not (wa == wb) then
         -- intersection, recompute tPl
         tPi = ipe.Vector(tBx,yb)
         tPl = ipe.Vector(xa, (a.y+a.x) - xa)
@@ -256,7 +253,7 @@ function create_bisector(model)
   else 
      -- only (-1)-line of B can intersect
      local tBx = (b.y+b.x) - yb
-     if tBx > tPl.x and tBx < tPr.x and not wa == wb then
+     if tBx > tPl.x and tBx < tPr.x and not (wa == wb) then
         -- intersection, recompute tPr
         tPi = ipe.Vector(tBx,yb)
         tPr = ipe.Vector(xb, xb + (a.y-a.x))
