@@ -164,7 +164,7 @@ function getQuadrantOfB(a,b)
       end
    else
       if math.abs(dir.x) == math.abs(dir.y) then
-         return "bottomright"
+         return "bottomleft"
       elseif -dir.x < -dir.y then 
          return "bottom"
       else
@@ -204,16 +204,16 @@ function create_bisector(model)
 
   local rotation = 0;
 
-  if quad == "left" then
+  if quad == "left" or quad == "topleft" then
      -- we rotate B by pi/2 to the top quadrant
      rotation = 1 -- stands for 1 times pi/2
      b = rotate90(a,b)
-  elseif quad == "bottom" then
+  elseif quad == "bottom" or quad == "bottomleft"  then
     -- we rotate B by pi/2 to the top quadrant
      rotation = 2 -- stands for 2 times pi/2
      b = rotate90(a,b)
      b = rotate90(a,b)
-  elseif quad == "right" then
+  elseif quad == "right" or quad == "bottomright"  then
      -- we rotate B by pi/2 to the top quadrant
      rotation = 3 -- stands for 3 times pi/2
      b = rotate90(a,b)
@@ -234,7 +234,7 @@ function create_bisector(model)
   if b.x >= a.x then
      -- only (1)-line of B can intersect
      local tBx = yb - (b.y-b.x)
-     if tBx > tPl.x and tBx < tPr.x and not (wa == wb) then
+     if tBx > tPl.x and tBx < tPr.x then
         -- intersection, recompute tPl
         tPi = ipe.Vector(tBx,yb)
         tPl = ipe.Vector(xa, (a.y+a.x) - xa)
@@ -253,7 +253,7 @@ function create_bisector(model)
   else 
      -- only (-1)-line of B can intersect
      local tBx = (b.y+b.x) - yb
-     if tBx > tPl.x and tBx < tPr.x and not (wa == wb) then
+     if tBx > tPl.x and tBx < tPr.x then
         -- intersection, recompute tPr
         tPi = ipe.Vector(tBx,yb)
         tPr = ipe.Vector(xb, xb + (a.y-a.x))
@@ -305,13 +305,13 @@ function create_bisector(model)
      local pl, pr = points[1], points[0]
      local pll, prr = pl, pr
      
-     dist = math.max(math.abs(pr.x-pl.x),math.abs(pr.y-pl.y))
+     dist = 2.0 * math.max(math.abs(pr.x-pl.x),math.abs(pr.y-pl.y))
      if a.x < b.x then
-        pll = pl + dist*ipe.Vector(-1,1)
-        prr = pr + dist*ipe.Vector(1,-1)
+        pll = pl + (dist*ipe.Vector(-1,1))
+        prr = pr + (dist*ipe.Vector(1,-1))
      else
-        pll = pl + dist*ipe.Vector(-1,-1)
-        prr = pr + dist*ipe.Vector(1,1)
+        pll = pl + (dist*ipe.Vector(-1,-1))
+        prr = pr + (dist*ipe.Vector(1,1))
      end
 
      points[0], points[1], points[2], points[3] = pll, pl, pr, prr
@@ -325,6 +325,13 @@ function create_bisector(model)
         points[0], points[1], points[2], points[3] = pl, pll, pl2, pl
         points[4], points[5], points[6], points[7] = pr, prr, pr2, pr
         pointSize = 8
+     elseif quad == "topright" or quad == "topleft" or 
+            quad == "bottomleft" or quad == "bottomright" then
+            
+            pll = pr + (dist * ipe.Vector(-1,1))
+            
+            points[0], points[1] = prr, pll
+            pointSize = 2
      end
 
   end
