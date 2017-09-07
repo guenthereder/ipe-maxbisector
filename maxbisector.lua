@@ -226,6 +226,7 @@ function create_bisector(model)
   local tX = yb - (a.y-a.x)
   local tPr = ipe.Vector(tX,yb)
   local tPl = ipe.Vector(tPr.x - (2*(tX-a.x)), yb)
+  local tPi = tPl
 
   local pointSize = 0
   local leftWedge, rightWedge = false, false
@@ -302,7 +303,8 @@ function create_bisector(model)
   
   else
      -- equal weights
-     local pl, pr = points[1], points[0]
+     --local pl, pr = points[1], points[0]
+     local pl, pr = tPi, tPr
      local pll, prr = pl, pr
      
      dist = 2.0 * math.max(math.abs(pr.x-pl.x),math.abs(pr.y-pl.y))
@@ -310,6 +312,8 @@ function create_bisector(model)
         pll = pl + (dist*ipe.Vector(-1,1))
         prr = pr + (dist*ipe.Vector(1,-1))
      else
+        pl, pr = tPl, tPi
+        print("bad")
         pll = pl + (dist*ipe.Vector(-1,-1))
         prr = pr + (dist*ipe.Vector(1,1))
      end
