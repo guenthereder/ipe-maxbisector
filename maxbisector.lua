@@ -311,9 +311,11 @@ function create_bisector(model)
      if a.x < b.x then
         pll = pl + (dist*ipe.Vector(-1,1))
         prr = pr + (dist*ipe.Vector(1,-1))
+     elseif a.x == b.x then
+        pll = pl + (dist*ipe.Vector(-1,-1))
+        prr = pr + (dist*ipe.Vector(1,1))
      else
         pl, pr = tPl, tPi
-        print("bad")
         pll = pl + (dist*ipe.Vector(-1,-1))
         prr = pr + (dist*ipe.Vector(1,1))
      end
