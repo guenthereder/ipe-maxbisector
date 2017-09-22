@@ -235,7 +235,7 @@ function create_bisector(model)
   if b.x >= a.x then
      -- only (1)-line of B can intersect
      local tBx = yb - (b.y-b.x)
-     if tBx > tPl.x and tBx < tPr.x then
+     if tBx >= tPl.x and tBx <= tPr.x then
         -- intersection, recompute tPl
         tPi = ipe.Vector(tBx,yb)
         tPl = ipe.Vector(xa, (a.y+a.x) - xa)
